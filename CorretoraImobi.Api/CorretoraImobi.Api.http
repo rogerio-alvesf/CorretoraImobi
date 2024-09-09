@@ -1,0 +1,6 @@
+@CorretoraImobi.Api_HostAddress = http://localhost:5250
+
+GET {{CorretoraImobi.Api_HostAddress}}/imoveis
+Accept: application/json
+
+###

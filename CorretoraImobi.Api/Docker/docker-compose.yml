@@ -1,0 +1,14 @@
+services:
+  db:
+    image: mongo
+    container_name: imobi-mongo-db
+    restart: always
+    ports:
+      - "${HOST_EXTERNAL_PORT_MONGO}:27017"
+    environment:
+          - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME}
+          - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
+    volumes:
+      - D:\Projects\CorretoraImobi\CorretoraImobi.Api\Disk\Data\MongoDb\dbdata:/data/db
+    env_file:
+      - .env

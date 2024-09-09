@@ -1,0 +1,43 @@
+# Arquivos e diretórios que devem ser ignorados em um projeto .NET
+
+# Arquivos temporários gerados pelo Visual Studio
+.vs/
+bin/
+obj/
+
+# Arquivos de compilação
+*.dll
+*.exe
+*.pdb
+*.zip
+*.sqlite
+
+# Diretórios de dependências
+packages/
+node_modules/
+
+# Arquivos de configuração
+*.user
+*.vscode
+*.suo
+*.sln.docstates
+
+# Logs e caches
+*.log
+*.cache
+
+# Arquivos específicos do sistema operacional
+.DS_Store
+Thumbs.db
+
+#Backdata
+*Disk/
+
+# Arquivos de build gerados pelo MSBuild
+[Bb]in/
+[Ii]ntermediate/
+
+#Credenciais de acesso
+appsettings.json
+appsettings.Development.json
+.env
