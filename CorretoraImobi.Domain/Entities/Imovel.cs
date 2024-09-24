@@ -1,7 +1,7 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
-namespace CorretoraImobi.Api.Models
+namespace CorretoraImobi.Domain.Entities
 {
     public class Imovel
     {

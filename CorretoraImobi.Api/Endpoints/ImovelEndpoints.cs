@@ -1,4 +1,4 @@
-﻿using CorretoraImobi.Api.Models;
+﻿using CorretoraImobi.Domain.Entities;
 using MongoDB.Driver;
 
 namespace CorretoraImobi.Api.Endpoints

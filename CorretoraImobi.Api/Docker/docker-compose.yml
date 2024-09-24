@@ -8,7 +8,5 @@ services:
     environment:
           - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME}
           - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
-    volumes:
-      - D:\Projects\CorretoraImobi\CorretoraImobi.Api\Disk\Data\MongoDb\dbdata:/data/db
     env_file:
       - .env
