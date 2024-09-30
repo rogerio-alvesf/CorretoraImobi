@@ -1,4 +1,6 @@
 using CorretoraImobi.Api.Config;
+using CorretoraImobi.Domain.Repositories;
+using CorretoraImobi.Infrastructure.Data;
 using Microsoft.OpenApi.Models;
 using MongoDB.Bson;
 using MongoDB.Driver;
@@ -35,11 +37,8 @@ builder.Services.AddSingleton<IMongoClient>(s =>
     return new MongoClient(settings);
 });
 
-builder.Services.AddSingleton(s =>
-{
-    var client = s.GetRequiredService<IMongoClient>();
-    return client.GetDatabase("CorretoraImobi");
-});
+// Injeta a implementação do repositório na camada de domínio
+builder.Services.AddScoped<IImovelRepository, MongoDbImovelRepository>();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

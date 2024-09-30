@@ -1,5 +1,5 @@
 ﻿using CorretoraImobi.Domain.Entities;
-using MongoDB.Driver;
+using CorretoraImobi.Domain.Repositories;
 
 namespace CorretoraImobi.Api.Endpoints
 {
@@ -7,38 +7,36 @@ namespace CorretoraImobi.Api.Endpoints
     {
         public static void AddImovelEndpoints(WebApplication app)
         {
-            app.MapGet("/imoveis", async (IMongoDatabase db) =>
+            // Listar todos os imóveis
+            app.MapGet("/imoveis", async (IImovelRepository imovelRepository) =>
             {
-                var imoveisCollection = db.GetCollection<Imovel>("imoveis");
-                var imoveis = await imoveisCollection.Find(_ => true).ToListAsync();
+                var imoveis = await imovelRepository.GetAllAsync();
                 return Results.Ok(imoveis);
             });
 
-            app.MapGet("/imoveis/{imovelId}", async (IMongoDatabase db, string imovelId) =>
+            // Buscar um imóvel por ID
+            app.MapGet("/imoveis/{imovelId}", async (IImovelRepository imovelRepository, string imovelId) =>
             {
-                var imoveisCollection = db.GetCollection<Imovel>("imoveis");
-                var imovel = await imoveisCollection.Find(i => i.ID_Imovel == imovelId).FirstOrDefaultAsync();
+                var imovel = await imovelRepository.GetByIdAsync(imovelId);
 
-                if (imovel == null)
-                    return Results.NotFound();
-
-                return Results.Ok(imovel);
+                return imovel == null 
+                    ? Results.NotFound() 
+                    : Results.Ok(imovel);
             });
 
-            app.MapPost("/imovel", async (IMongoDatabase db, Imovel imovel) =>
+            // Criar um novo imóvel
+            app.MapPost("/imovel", async (IImovelRepository imovelRepository, Imovel imovel) =>
             {
-                var imoveisCollection = db.GetCollection<Imovel>("imoveis");
-                await imoveisCollection.InsertOneAsync(imovel);
+                await imovelRepository.AddAsync(imovel);
                 return Results.Created($"/imoveis/{imovel.ID_Imovel}", imovel);
             });
 
-            app.MapDelete("/imoveis", async (IMongoDatabase db) =>
+            // Deletar todos os imóveis
+            app.MapDelete("/imoveis", async (IImovelRepository imovelRepository) =>
             {
-                var imoveisCollection = db.GetCollection<Imovel>("imoveis");
-
-                var result = await imoveisCollection.DeleteManyAsync(_ => true);
-
-                return Results.Ok(new { Message = $"{result.DeletedCount} imoveis deletado/s." });
+                // Supondo que você tem um método DeleteAllAsync no repositório
+                await imovelRepository.DeleteAll();
+                return Results.Ok(new { Message = "Todos os imóveis foram deletados." });
             });
         }
     }
