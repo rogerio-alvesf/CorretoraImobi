@@ -29,7 +29,7 @@ namespace CorretoraImobi.Infrastructure.Data
         public async Task DeleteAsync(string id)
             => await _imoveisCollection.DeleteOneAsync(imovel => imovel.ID_Imovel == id);
 
-        public async Task DeleteAll()
+        public async Task DeleteAllAsync()
             => await _imoveisCollection.DeleteManyAsync(_ => true);
     }
 }
