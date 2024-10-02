@@ -9,6 +9,6 @@ namespace CorretoraImobi.Domain.Repositories
         Task AddAsync(Imovel imovel);
         Task UpdateAsync(Imovel imovel);
         Task DeleteAsync(string id);
-        Task DeleteAll();
+        Task DeleteAllAsync();
     }
 }
