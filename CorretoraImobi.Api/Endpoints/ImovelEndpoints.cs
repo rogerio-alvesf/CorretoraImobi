@@ -1,5 +1,5 @@
 ﻿using CorretoraImobi.Domain.Entities;
-using CorretoraImobi.Domain.Repositories;
+using CorretoraImobi.Domain.Interfaces.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CorretoraImobi.Api.Endpoints
@@ -10,53 +10,70 @@ namespace CorretoraImobi.Api.Endpoints
 
         public static void AddImovelEndpoints(WebApplication app)
         {
-            var imovelEndpointsApp = app.MapGroup("imoveis");
+            var imovelEndpointsApp = app.MapGroup("imoveis").WithTags("Imovel");
 
             // Listar todos os imóveis
-            imovelEndpointsApp.MapGet(Pattern, async (IImovelRepository imovelRepository) =>
+            imovelEndpointsApp.MapGet(Pattern, async (IImovelService imovelService) =>
             {
-                var imoveis = await imovelRepository.GetAllAsync();
+                var imoveis = await imovelService.GetAllAsync();
                 return Results.Ok(imoveis);
             });
 
-            // Buscar um imóvel por ID
-            imovelEndpointsApp.MapGet("{imovelId}", async (IImovelRepository imovelRepository, [FromRoute] string imovelId) =>
-            {
-                var imovel = await imovelRepository.GetByIdAsync(imovelId);
+            imovelEndpointsApp.MapGet("{imovelId}", async (IImovelService imovelService, [FromRoute] string imovelId) =>
+                {
+                    var result = await imovelService.GetByIdAsync(imovelId);
 
-                return imovel == null 
-                    ? Results.NotFound()
-                    : Results.Ok(imovel);
-            });
+                    if (!result.Success)
+                        return Results.NotFound(new { Message = result.Message });
+
+                    return Results.Ok(new { Message = result.Imovel });
+                }
+            ).WithOpenApi(operation => new (operation)
+                {
+                    OperationId = "GetByIdAsync",
+                    Summary = "Consulta o imovel pelo id informado",
+                    Description = "Caso não seja encontrado, será retornado 400 (NotFound)"
+                }
+            );
 
             // Criar um novo imóvel
-            imovelEndpointsApp.MapPost(Pattern, async (IImovelRepository imovelRepository, [FromBody] Imovel imovel) =>
+            imovelEndpointsApp.MapPost(Pattern, async (IImovelService imovelService, [FromBody] Imovel imovel) =>
             {
-                await imovelRepository.AddAsync(imovel);
+                await imovelService.AddAsync(imovel);
                 return Results.Created($"/{imovelEndpointsApp}/{imovel.ID_Imovel}", imovel);
             });
 
             //Atualizando imóvel
-            imovelEndpointsApp.MapPut(Pattern, async (IImovelRepository imovelRepository, [FromBody] Imovel imovel) =>
+            imovelEndpointsApp.MapPut(Pattern, async (IImovelService imovelService, [FromBody] Imovel imovel) =>
             {
-                await imovelRepository.UpdateAsync(imovel);
-                return Results.Ok();
+                var result = await imovelService.UpdateAsync(imovel);
+
+                if (!result.Success)
+                    return Results.NotFound(new { Message = result.Message });
+
+                return Results.Ok(new { Message = result.Message });
             });
 
             // Deletar todos os imóveis
-            imovelEndpointsApp.MapDelete(Pattern, async (IImovelRepository imovelRepository) =>
+            imovelEndpointsApp.MapDelete(Pattern, async (IImovelService imovelService) =>
             {
-                // Supondo que você tem um método DeleteAllAsync no repositório
-                await imovelRepository.DeleteAllAsync();
-                return Results.Ok(new { Message = "Todos os imóveis foram deletados." });
+                var result = await imovelService.DeleteAllAsync();
+
+                if (!result.Success)
+                    return Results.NotFound(new { Message = result.Message });
+
+                return Results.Ok(new { Message = result.Message });
             });
 
             //Deletando imóvel por id
-            imovelEndpointsApp.MapDelete("{imovelId}", async (IImovelRepository imovelRepository, [FromRoute] string imovelId) =>
+            imovelEndpointsApp.MapDelete("{imovelId}", async (IImovelService imovelService, [FromRoute] string imovelId) =>
             {
-                // Supondo que você tem um método DeleteAllAsync no repositório
-                await imovelRepository.DeleteAsync(imovelId);
-                return Results.Ok(new { Message = "Imóvel deletado com sucesso." });
+                var result = await imovelService.DeleteAsync(imovelId);
+
+                if (!result.Success)
+                    return Results.NotFound(new { message = result.Message });
+
+                return Results.Ok(new { Message = result.Message });
             });
         }
     }

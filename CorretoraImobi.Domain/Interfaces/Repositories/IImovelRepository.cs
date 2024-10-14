@@ -1,6 +1,6 @@
 ﻿using CorretoraImobi.Domain.Entities;
 
-namespace CorretoraImobi.Domain.Repositories
+namespace CorretoraImobi.Domain.Interfaces.Repositories
 {
     public interface IImovelRepository
     {

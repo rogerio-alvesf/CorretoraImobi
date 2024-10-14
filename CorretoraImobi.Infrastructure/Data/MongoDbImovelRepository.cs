@@ -1,5 +1,5 @@
 ﻿using CorretoraImobi.Domain.Entities;
-using CorretoraImobi.Domain.Repositories;
+using CorretoraImobi.Domain.Interfaces.Repositories;
 using MongoDB.Driver;
 
 namespace CorretoraImobi.Infrastructure.Data

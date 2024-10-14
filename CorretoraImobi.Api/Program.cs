@@ -1,5 +1,5 @@
 using CorretoraImobi.Api.Config;
-using CorretoraImobi.Domain.Repositories;
+using CorretoraImobi.Domain.Interfaces.Repositories;
 using CorretoraImobi.Infrastructure.Data;
 using Microsoft.OpenApi.Models;
 using MongoDB.Bson;
