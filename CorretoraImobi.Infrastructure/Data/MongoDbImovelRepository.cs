@@ -23,13 +23,25 @@ namespace CorretoraImobi.Infrastructure.Data
         public async Task AddAsync(Imovel imovel)
             => await _imoveisCollection.InsertOneAsync(imovel);
 
-        public async Task UpdateAsync(Imovel imovel)
-            => await _imoveisCollection.ReplaceOneAsync(i => i.ID_Imovel == imovel.ID_Imovel, imovel);
+        public async Task ReplaceOneAsync(string id, Imovel imovel)
+        {
+            imovel.AtualizarIdentificador(id);
+
+            await _imoveisCollection.ReplaceOneAsync(i => i.ID_Imovel == id, imovel);
+        }
 
         public async Task DeleteAsync(string id)
             => await _imoveisCollection.DeleteOneAsync(imovel => imovel.ID_Imovel == id);
 
         public async Task DeleteAllAsync()
             => await _imoveisCollection.DeleteManyAsync(_ => true);
+
+        public async Task UpdateLazerAsync(string id, string[] lazer)
+        {
+            // Definição da atualização para modificar apenas um campo
+            var update = Builders<Imovel>.Update.Set("lazer", lazer);
+
+            await _imoveisCollection.UpdateOneAsync(i => i.ID_Imovel == id, update);
+        }
     }
 }

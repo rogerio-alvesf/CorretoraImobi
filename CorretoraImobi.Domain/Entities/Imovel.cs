@@ -60,5 +60,7 @@ namespace CorretoraImobi.Domain.Entities
 
         [BsonElement("qt_garagem_aberta")]
         public int QT_Garagem_Aberta { get; set; } = 0;
+        public void AtualizarIdentificador(string id)
+            => ID_Imovel = id;
     }
 }

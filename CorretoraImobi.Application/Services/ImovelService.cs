@@ -15,7 +15,7 @@ namespace CorretoraImobi.Application.Services
         {
             var imovel = await _imovelRepository.GetByIdAsync(id);
 
-            if (imovel != null)
+            if (imovel == null)
                 return (false, "Imóvel não encontrado.", imovel);
 
             return (true, "", imovel);
@@ -27,16 +27,28 @@ namespace CorretoraImobi.Application.Services
         public async Task AddAsync(Imovel imovel)
             => await _imovelRepository.AddAsync(imovel);
 
-        public async Task<(bool Success, string Message)> UpdateAsync(Imovel imovel)
+        public async Task<(bool Success, string Message)> ReplaceOneAsync(string id, Imovel imovel)
         {
-            var imovelExiste = await GetByIdAsync(imovel.ID_Imovel);
+            var imovelExiste = await GetByIdAsync(id);
 
             if (!imovelExiste.Success)
                 return (imovelExiste.Success, imovelExiste.Message);
 
-            await _imovelRepository.UpdateAsync(imovel);
+            await _imovelRepository.ReplaceOneAsync(id, imovel);
 
             return (true, "Imóvel atualizado com sucesso.");
+        }
+
+        public async Task<(bool Success, string Message)> UpdateLazerAsync(string id, string[] lazer)
+        {
+            var imovelExiste = await GetByIdAsync(id);
+
+            if (!imovelExiste.Success)
+                return (imovelExiste.Success, imovelExiste.Message);
+
+            await _imovelRepository.UpdateLazerAsync(id, lazer);
+
+            return (true, $"Lista de lazer do imóvel {id} atualizado com sucesso.");
         }
 
         public async Task<(bool Success, string Message)> DeleteAsync(string id)

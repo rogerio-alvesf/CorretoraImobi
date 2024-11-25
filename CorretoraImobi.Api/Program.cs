@@ -1,5 +1,7 @@
 using CorretoraImobi.Api.Config;
+using CorretoraImobi.Application.Services;
 using CorretoraImobi.Domain.Interfaces.Repositories;
+using CorretoraImobi.Domain.Interfaces.Services;
 using CorretoraImobi.Infrastructure.Data;
 using Microsoft.OpenApi.Models;
 using MongoDB.Bson;
@@ -27,11 +29,9 @@ builder.Services.AddSingleton<IMongoClient>(s =>
     settings.ClusterConfigurator = cb =>
     {
         var loggerFactory = s.GetRequiredService<ILoggerFactory>();
-        cb.Subscribe<MongoDB.Driver.Core.Events.CommandStartedEvent>(e =>
-        {
-            var logger = loggerFactory.CreateLogger("MongoDB.Command");
-            logger.LogInformation($"MongoDB Command Started: {e.CommandName} - {e.Command.ToJson()}");
-        });
+        cb.Subscribe<MongoDB.Driver.Core.Events.CommandStartedEvent>(e => 
+            loggerFactory.CreateLogger("MongoDB.Command").LogInformation($"MongoDB Command Started: {e.CommandName} - {e.Command.ToJson()}")
+        );
     };
 
     return new MongoClient(settings);
@@ -39,13 +39,12 @@ builder.Services.AddSingleton<IMongoClient>(s =>
 
 // Injeta a implementação do repositório na camada de domínio
 builder.Services.AddScoped<IImovelRepository, MongoDbImovelRepository>();
+builder.Services.AddScoped<IImovelService, ImovelService>();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(c =>
-{
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "CorretoraImobi.Api", Version = "v1" });
-});
+builder.Services.AddSwaggerGen(c => c.SwaggerDoc("v1", new OpenApiInfo { Title = "CorretoraImobi.Api", Version = "v1" }));
+
 
 var app = builder.Build();
 
@@ -56,6 +55,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseRouting();
+
 ConfigureEndpoints.AddEndpoints(app);
 app.UseHttpsRedirection();
 
@@ -63,5 +64,4 @@ app.Run();
 
 public partial class Program
 {
-
 }
