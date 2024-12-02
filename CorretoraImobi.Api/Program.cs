@@ -40,11 +40,14 @@ builder.Services.AddSingleton<IMongoClient>(s =>
 // Injeta a implementação do repositório na camada de domínio
 builder.Services.AddScoped<IImovelRepository, MongoDbImovelRepository>();
 builder.Services.AddScoped<IImovelService, ImovelService>();
+builder.Services.AddScoped<ILazerImovelRepository, MongoDbLazerImovelRepository>();
+builder.Services.AddScoped<ILazerImovelService, LazerImovelService>();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c => c.SwaggerDoc("v1", new OpenApiInfo { Title = "CorretoraImobi.Api", Version = "v1" }));
 
+builder.Services.AddMemoryCache();
 
 var app = builder.Build();
 

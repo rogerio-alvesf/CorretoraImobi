@@ -1,4 +1,5 @@
 ﻿using CorretoraImobi.Domain.Entities;
+using CorretoraImobi.Domain.Enums;
 using CorretoraImobi.Domain.Interfaces.Repositories;
 using CorretoraImobi.Domain.Interfaces.Services;
 
@@ -29,34 +30,22 @@ namespace CorretoraImobi.Application.Services
 
         public async Task<(bool Success, string Message)> ReplaceOneAsync(string id, Imovel imovel)
         {
-            var imovelExiste = await GetByIdAsync(id);
+            var imovelExistente = await GetByIdAsync(id);
 
-            if (!imovelExiste.Success)
-                return (imovelExiste.Success, imovelExiste.Message);
+            if (!imovelExistente.Success)
+                return (imovelExistente.Success, imovelExistente.Message);
 
             await _imovelRepository.ReplaceOneAsync(id, imovel);
 
             return (true, "Imóvel atualizado com sucesso.");
         }
 
-        public async Task<(bool Success, string Message)> UpdateLazerAsync(string id, string[] lazer)
-        {
-            var imovelExiste = await GetByIdAsync(id);
-
-            if (!imovelExiste.Success)
-                return (imovelExiste.Success, imovelExiste.Message);
-
-            await _imovelRepository.UpdateLazerAsync(id, lazer);
-
-            return (true, $"Lista de lazer do imóvel {id} atualizado com sucesso.");
-        }
-
         public async Task<(bool Success, string Message)> DeleteAsync(string id)
         {
-            var imovelExiste = await GetByIdAsync(id);
+            var imovelExistente = await GetByIdAsync(id);
 
-            if (!imovelExiste.Success)
-                return (imovelExiste.Success, imovelExiste.Message);
+            if (!imovelExistente.Success)
+                return (imovelExistente.Success, imovelExistente.Message);
 
             await _imovelRepository.DeleteAsync(id);
 
@@ -73,6 +62,28 @@ namespace CorretoraImobi.Application.Services
             await _imovelRepository.DeleteAllAsync();
 
             return (true, "Todos os imóveis foram deletados.");
+        }
+
+        public async Task<IEnumerable<Imovel>> GetByFilter(TipoFiltroImovel tipoFiltro, string nome_campo, decimal valor_busca)
+        {
+            var formasBusca = new Dictionary<TipoFiltroImovel, Func<string, decimal, Task<IEnumerable<Imovel>>>>
+            {
+                { TipoFiltroImovel.Eq, _imovelRepository.GetByValueEqualTo },
+                { TipoFiltroImovel.Gt, _imovelRepository.GetByValueGreaterThan },
+                { TipoFiltroImovel.Lt, _imovelRepository.GetByValueLessThan },
+            };
+
+            return await formasBusca[tipoFiltro](nome_campo, valor_busca);
+        }
+
+        public async Task<IEnumerable<Imovel>> GetByFilter(TipoFiltroImovel tipoFiltro, string nome_campo, string valor_busca)
+        {
+            Dictionary<TipoFiltroImovel, Func<string, string, Task<IEnumerable<Imovel>>>> formasBusca = new Dictionary<TipoFiltroImovel, Func<string, string, Task<IEnumerable<Imovel>>>>
+            {
+                { TipoFiltroImovel.Eq, _imovelRepository.GetByValueEqualTo }
+            };
+
+            return await formasBusca[tipoFiltro](nome_campo, valor_busca);
         }
     }
 }

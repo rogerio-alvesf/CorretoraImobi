@@ -1,5 +1,4 @@
 ﻿using CorretoraImobi.Domain.Entities;
-using System.Linq.Expressions;
 
 namespace CorretoraImobi.Domain.Interfaces.Repositories
 {
@@ -9,8 +8,11 @@ namespace CorretoraImobi.Domain.Interfaces.Repositories
         Task<IEnumerable<Imovel>> GetAllAsync();
         Task AddAsync(Imovel imovel);
         Task ReplaceOneAsync(string id, Imovel imovel);
-        Task UpdateLazerAsync(string id, string[] lazer);
         Task DeleteAsync(string id);
         Task DeleteAllAsync();
+        Task<IEnumerable<Imovel>> GetByValueGreaterThan(string nome_campo, decimal valor_busca);
+        Task<IEnumerable<Imovel>> GetByValueLessThan(string nome_campo, decimal valor_busca);
+        Task<IEnumerable<Imovel>> GetByValueEqualTo(string nome_campo, decimal valor_busca);
+        Task<IEnumerable<Imovel>> GetByValueEqualTo(string nome_campo, string valor_busca);
     }
 }

@@ -7,6 +7,7 @@ namespace CorretoraImobi.Api.Config
         public static void AddEndpoints(WebApplication app)
         {
             ImovelEndpoints.AddImovelEndpoints(app);
+            LazerImovelEndpoints.AddLazerImovelEndpoints(app);
         }
     }
 }
