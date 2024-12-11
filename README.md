@@ -13,8 +13,6 @@ CorretoraImobi é um projeto de exemplo que demonstra a implementação de um CR
 - **Domínio**: Contém as entidades e enums.
 - **Testes**: Contém os testes de integração.
 
-(`Docs\images\CorretoraImobi.Doc.jpg`)
-
 ## Tecnologias Utilizadas 
 - .NET Core (8.0)
 - MongoDB
